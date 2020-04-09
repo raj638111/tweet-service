@@ -3,12 +3,11 @@ package com.occ.rankingservice;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-//import javafx.util.Pair;
+
+import com.occ.rankingservice.impl.Ranking;
+import com.occ.rankingservice.utils.NameInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,86 +18,40 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class RankingController {
 
-    private static final String template = "Hello, %s!";
+    private Map<String, Ranking> serviceMap = new HashMap<String, Ranking>();
+
+    @Autowired // Inject all Services implementations
+    RankingController(List<Ranking> services) {
+        services.forEach(x -> {
+             serviceMap.put(x.getClass().getName(), x);
+        });
+        log.info("No of Ranking Service / Algorithm available -> " + services.size());
+    }
+
+    @GetMapping("/services")
+    public List<String> getServices() {
+        List<String> services = new LinkedList<String>();
+        serviceMap.forEach((key, value) -> services.add(key));
+        return services;
+    }
 
     @PostMapping("/ranking")
-    public Pair<String, BigInteger> gpost(@RequestParam("file") MultipartFile file) throws IOException {
+    public BigInteger gpost(@RequestParam("file") MultipartFile file,
+        @RequestParam(value = "service", defaultValue = "com.occ.rankingservice.impl.Ranking") String service,
+        @RequestParam(value = "consider", defaultValue = "firstname") String consider,
+        @RequestParam(value = "naturalsort", defaultValue = "true") Boolean naturalsort)
+        throws IOException {
         String fName = file.getOriginalFilename();
         log.info("fName -> " + fName);
+        log.info("service -> " + service);
+        log.info("consider -> " + consider);
+        log.info("naturalsort -> " + naturalsort);
         String str = new String(file.getBytes());
-        List<Pair<String, Long>> names = parseAndSortNames(str);
-        Map<Character, Integer> map = createAlphabetToIndexMap();
-        BigInteger sum = calculateSum(names, map);
-        return new Pair(fName, sum);
+        Ranking serviceImpl = serviceMap.get(service);
+        List<NameInfo> names = serviceImpl.parseAndSortNames(str, consider, naturalsort);
+        BigInteger sum = serviceImpl.calculateSum(names);
+        return sum;
     }
 
-    private BigInteger calculateSum(List<Pair<String, Long>> names, Map<Character, Integer> map){
-        BigInteger result = new BigInteger("0");
-        for(Pair<String, Long> pair: names){
-            String name = pair.getKey();
-            Integer nameSum = name.chars().reduce(0,
-                (part, ch) -> {
-                    Integer letterIndex = map.get((char)ch);
-                    return part + letterIndex;
-                });
-            Long nameIndex = pair.getValue();
-            Long product = nameIndex * nameSum;
-            result = result.add(BigInteger.valueOf(product.longValue()));
-        }
-        log.info("Result -> " + result);
-        return result;
-    }
 
-    private Map<Character, Integer> createAlphabetToIndexMap(){
-        Map map = new HashMap<Character, Integer>();
-        AtomicInteger atomicInteger = new AtomicInteger(0);
-        IntStream.rangeClosed('a', 'z')
-            .forEach(c -> {
-                Integer index = atomicInteger.incrementAndGet();
-                map.put((char)c, index);
-            });
-        return map;
-    }
-
-    /*private List<Pair<String, Long>> parseAndSortNames(String str){
-        String[] names = str.split(",");
-        Stream<String> stream = Arrays.stream(names);
-        AtomicLong atomicLong = new AtomicLong(0);
-        Stream<Pair<String, Long>> result = stream
-            .map(x -> x.replace("\"", "" )
-                .replace("\n", "").toLowerCase())
-            .sorted(Comparator.naturalOrder())
-            .map(x -> {
-                Long index = atomicLong.incrementAndGet();
-                return new Pair(x, index);
-            });
-        List<Pair<String, Long>> res = result.collect(Collectors.toList());
-        return res;
-    }*/
-
-    private List<NameInfo> parseAndSortNames(String str){
-        String[] names = str.split(",");
-        Stream<String> stream = Arrays.stream(names);
-        AtomicLong atomicLong = new AtomicLong(0);
-        Stream<NameInfo> result = stream
-                .map(x -> x.replace("\"", "" )
-                        .replace("\n", "").toLowerCase())
-                .sorted(Comparator.naturalOrder())
-                .map(x -> {
-                    Long index = atomicLong.incrementAndGet();
-                    return new NameInfo(x, index);
-                });
-        List<NameInfo> res = result.collect(Collectors.toList());
-        return res;
-    }
-
-}
-
-class NameInfo{
-    public String name;
-    public Long offset;
-    public NameInfo(String nm, Long oset){
-        name = name;
-        offset = oset;
-    }
 }

@@ -8,8 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import javafx.util.Pair;
-import org.springframework.web.bind.annotation.GetMapping;
+//import javafx.util.Pair;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +60,7 @@ public class RankingController {
         return map;
     }
 
-    private List<Pair<String, Long>> parseAndSortNames(String str){
+    /*private List<Pair<String, Long>> parseAndSortNames(String str){
         String[] names = str.split(",");
         Stream<String> stream = Arrays.stream(names);
         AtomicLong atomicLong = new AtomicLong(0);
@@ -75,7 +74,31 @@ public class RankingController {
             });
         List<Pair<String, Long>> res = result.collect(Collectors.toList());
         return res;
+    }*/
+
+    private List<NameInfo> parseAndSortNames(String str){
+        String[] names = str.split(",");
+        Stream<String> stream = Arrays.stream(names);
+        AtomicLong atomicLong = new AtomicLong(0);
+        Stream<NameInfo> result = stream
+                .map(x -> x.replace("\"", "" )
+                        .replace("\n", "").toLowerCase())
+                .sorted(Comparator.naturalOrder())
+                .map(x -> {
+                    Long index = atomicLong.incrementAndGet();
+                    return new NameInfo(x, index);
+                });
+        List<NameInfo> res = result.collect(Collectors.toList());
+        return res;
     }
 
 }
 
+class NameInfo{
+    public String name;
+    public Long offset;
+    public NameInfo(String nm, Long oset){
+        name = name;
+        offset = oset;
+    }
+}

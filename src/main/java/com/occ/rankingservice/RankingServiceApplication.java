@@ -1,13 +1,13 @@
-package com.example.restservice;
+package com.occ.rankingservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RestServiceApplication {
+public class RankingServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RestServiceApplication.class, args);
+		SpringApplication.run(RankingServiceApplication.class, args);
 	}
 
 }

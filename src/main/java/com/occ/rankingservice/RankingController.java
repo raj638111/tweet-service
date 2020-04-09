@@ -1,4 +1,4 @@
-package com.example.restservice;
+package com.occ.rankingservice;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -18,17 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-public class GreetingController {
+public class RankingController {
 
     private static final String template = "Hello, %s!";
 
-    @GetMapping("/greeting")
-    public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name){
-        log.info("Greeting. " + name);
-        return new Greeting(Thread.currentThread().getId(), String.format(template, name));
-    }
-
-    @PostMapping("/gpost")
+    @PostMapping("/ranking")
     public Pair<String, BigInteger> gpost(@RequestParam("file") MultipartFile file) throws IOException {
         String fName = file.getOriginalFilename();
         log.info("fName -> " + fName);

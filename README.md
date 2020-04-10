@@ -153,9 +153,6 @@ Usage: <main class> rank [--descending] --file=<file> --host=<host>
 ```
 |-- $HOME
     |-- client
-    |   |-- .gitignore
-    |   |-- client.iml
-    |   |-- pom.xml
     |   |-- src
     |       |-- main
     |           |-- java

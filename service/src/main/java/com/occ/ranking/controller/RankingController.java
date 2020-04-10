@@ -6,7 +6,7 @@ import java.util.*;
 import com.occ.ranking.constants.NameSelection;
 import com.occ.ranking.model.ServiceInfo;
 import com.occ.ranking.service.Ranking;
-import com.occ.ranking.model.NameInfo;
+import com.occ.ranking.helpers.NameInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;

@@ -151,52 +151,55 @@ Usage: <main class> rank [--descending] --file=<file> --host=<host>
 ```
 |-- $HOME
     |-- client
+    |   |-- .gitignore
+    |   |-- client.iml
+    |   |-- pom.xml
     |   |-- src
-    |   |   |-- main
-    |   |       |-- java
-    |   |       |   |-- com
-    |   |       |       |-- occ
-    |   |       |           |-- rankingcli
-    |   |       |               |-- RankCli.java
-    |   |       |               |-- commands
-    |   |       |                   |-- LS.java
-    |   |       |                   |-- Rank.java
+    |       |-- main
+    |           |-- java
+    |           |   |-- com
+    |           |       |-- occ
+    |           |           |-- rankingcli
+    |           |               |-- RankCli.java
+    |           |               |-- commands
+    |           |                   |-- LS.java
+    |           |                   |-- Rank.java
     |-- service
         |-- src
-        |   |-- main
-        |   |   |-- java
-        |   |   |   |-- com
-        |   |   |       |-- occ
-        |   |   |           |-- ranking
-        |   |   |               |-- RankingServiceApplication.java
-        |   |   |               |-- constants
-        |   |   |               |   |-- NameSelection.java
-        |   |   |               |-- controller
-        |   |   |               |   |-- RankingController.java
-        |   |   |               |-- model
-        |   |   |               |   |-- NameInfo.java
-        |   |   |               |   |-- ServiceInfo.java
-        |   |   |               |-- service
-        |   |   |                   |-- Ranking.java
-        |   |   |                   |-- RankingWithoutOffset.java
-        |   |   |-- resources
-        |   |       |-- testfiles
-        |   |           |-- large.txt
-        |   |           |-- small.txt
-        |   |-- test
-        |       |-- java
-        |           |-- com
-        |               |-- occ
-        |                   |-- ranking
-        |                       |-- apitests
-        |                       |   |-- ls
-        |                       |   |   |-- LsTests.java
-        |                       |   |-- rank
-        |                       |       |-- RankTests.java
-        |                       |       |-- RankWithoutOffsetTests.java
-        |                       |-- unittests
-        |                           |-- service
-        |                               |-- RankingTests.java
+            |-- main
+            |   |-- java
+            |   |   |-- com
+            |   |       |-- occ
+            |   |           |-- ranking
+            |   |               |-- RankingServiceApplication.java
+            |   |               |-- constants
+            |   |               |   |-- NameSelection.java
+            |   |               |-- controller
+            |   |               |   |-- RankingController.java
+            |   |               |-- helpers
+            |   |               |   |-- NameInfo.java
+            |   |               |   |-- Param.java
+            |   |               |-- model
+            |   |               |   |-- ServiceInfo.java
+            |   |               |-- service
+            |   |                   |-- Ranking.java
+            |   |                   |-- RankingWithoutOffset.java
+            |   |-- resources
+            |       |-- testfiles
+            |           |-- large.txt
+            |           |-- small.txt
+            |-- test
+                |-- java
+                    |-- com
+                        |-- occ
+                            |-- ranking
+                                |-- apitests
+                                |   |-- ls
+                                |   |   |-- LsTests.java
+                                |   |-- rank
+                                |       |-- RankTests.java
+                                |       |-- RankWithoutOffsetTests.java
+                                |-- unittests
+                                    |-- service
+                                        |-- RankingTests.java
 ```
-
-

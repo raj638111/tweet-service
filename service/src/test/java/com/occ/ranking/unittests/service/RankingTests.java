@@ -1,7 +1,7 @@
 package com.occ.ranking.unittests.service;
 import com.occ.ranking.constants.NameSelection;
 import com.occ.ranking.service.Ranking;
-import com.occ.ranking.model.NameInfo;
+import com.occ.ranking.helpers.NameInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import java.util.LinkedList;

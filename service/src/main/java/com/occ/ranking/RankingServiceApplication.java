@@ -1,7 +1,11 @@
 package com.occ.ranking;
 
+import com.occ.ranking.helpers.Param;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import picocli.CommandLine;
+
+import java.util.Collections;
 
 /**
 	Application starts here
@@ -11,7 +15,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RankingServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RankingServiceApplication.class, args);
+		Param param = new Param();
+		new CommandLine(param).parseArgs(args);
+		SpringApplication app = new SpringApplication(RankingServiceApplication.class);
+		app.setDefaultProperties(Collections
+				.singletonMap("server.port", param.port));
+		app.run(args);
+		//SpringApplication.run(RankingServiceApplication.class, args);
 	}
 
 }

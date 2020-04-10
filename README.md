@@ -7,7 +7,7 @@ Considering the user should be able to get a score from both the **Command Line*
 This project is divided into 2 Modules
 
 1. `$HOME/client`
-    - **command line utility** that will speak to the web service to get the answer         
+    - **command line utility (CLI)** that will speak to the web service to get the answer         
 2. `$HOME/service` 
     - **Web Service** that provides the ranking service. Web service is developed using `Spring Boot`
     
@@ -110,7 +110,6 @@ Commands:
           available
   rank  'rank' command computes rank for a given file
 ```
-**
 
 **Get help for `ls` command,**
 
@@ -147,7 +146,57 @@ Usage: <main class> rank [--descending] --file=<file> --host=<host>
                               available
 ```
 
+# Project Structure in Detail
 
-
+```
+|-- $HOME
+    |-- client
+    |   |-- src
+    |   |   |-- main
+    |   |       |-- java
+    |   |       |   |-- com
+    |   |       |       |-- occ
+    |   |       |           |-- rankingcli
+    |   |       |               |-- RankCli.java
+    |   |       |               |-- commands
+    |   |       |                   |-- LS.java
+    |   |       |                   |-- Rank.java
+    |-- service
+        |-- src
+        |   |-- main
+        |   |   |-- java
+        |   |   |   |-- com
+        |   |   |       |-- occ
+        |   |   |           |-- ranking
+        |   |   |               |-- RankingServiceApplication.java
+        |   |   |               |-- constants
+        |   |   |               |   |-- NameSelection.java
+        |   |   |               |-- controller
+        |   |   |               |   |-- RankingController.java
+        |   |   |               |-- model
+        |   |   |               |   |-- NameInfo.java
+        |   |   |               |   |-- ServiceInfo.java
+        |   |   |               |-- service
+        |   |   |                   |-- Ranking.java
+        |   |   |                   |-- RankingWithoutOffset.java
+        |   |   |-- resources
+        |   |       |-- testfiles
+        |   |           |-- large.txt
+        |   |           |-- small.txt
+        |   |-- test
+        |       |-- java
+        |           |-- com
+        |               |-- occ
+        |                   |-- ranking
+        |                       |-- apitests
+        |                       |   |-- ls
+        |                       |   |   |-- LsTests.java
+        |                       |   |-- rank
+        |                       |       |-- RankTests.java
+        |                       |       |-- RankWithoutOffsetTests.java
+        |                       |-- unittests
+        |                           |-- service
+        |                               |-- RankingTests.java
+```
 
 

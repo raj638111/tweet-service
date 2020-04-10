@@ -13,14 +13,15 @@ public class RankCli implements Runnable{
     public static void main(String[] args) {
         RankCli app = new RankCli();
         CommandLine cmd = new CommandLine(app);
+        // Call the appropriate commands/* class based on the user
+        // user argument
         cmd.execute(args);
         if(args.length == 0){
             cmd.usage(System.out);
         }
     }
 
-    public void run() {
-    }
+    public void run() { }
 
 }
 

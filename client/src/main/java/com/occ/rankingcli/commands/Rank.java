@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @CommandLine.Command(name = "rank",
-        description = "This command 'rank' computes rank for a given file")
+        description = "'rank' command computes rank for a given file")
 public class Rank implements Callable {
 
 

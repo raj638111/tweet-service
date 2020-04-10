@@ -1,6 +1,6 @@
-package com.occ.rankingservice.impl;
+package com.occ.ranking.service;
 
-import com.occ.rankingservice.utils.NameInfo;
+import com.occ.ranking.model.NameInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.util.*;
 
+/**
+ *  An example of just another implementation of 'Ranking' class
+ */
 @Slf4j
 @Service
 @Qualifier("RankingWithoutOffset")
@@ -31,5 +34,11 @@ public class RankingWithoutOffset extends Ranking{
         return result;
     }
 
+    @Override
+    public String info() {
+        return "An alternative implementation derived from 'Ranking' service \n" +
+                "Avoids mutiplying the sum of letters of a given word with \n" +
+                "index / offset";
+    }
 
 }

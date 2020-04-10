@@ -1,4 +1,4 @@
-package com.occ.rankingservice.utils;
+package com.occ.ranking.model;
 
 public class NameInfo {
    public String name;

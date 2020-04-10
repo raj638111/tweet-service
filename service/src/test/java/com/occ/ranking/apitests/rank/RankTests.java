@@ -1,4 +1,4 @@
-package com.occ.rankingservice.apitests;
+package com.occ.ranking.apitests.rank;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -22,6 +22,8 @@ import java.net.URL;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class RankTests {
 
+    String service = "com.occ.ranking.service.Ranking";
+
     @LocalServerPort
     private int port;
 
@@ -29,20 +31,35 @@ public class RankTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void testRank() throws IOException {
+    public void testSmallFile() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", getFileFromResources("testfiles/small.txt"));
-        body.add("service", "com.occ.rankingservice.impl.Ranking");
+        body.add("service", service);
         HttpEntity<MultiValueMap<String, Object>> requestEntity
                 = new HttpEntity<>(body, headers);
-        String url = "http://localhost:" + port + "/rank";
         ResponseEntity response = restTemplate.
-                postForEntity(url, requestEntity, String.class);
+                postForEntity(url(), requestEntity, String.class);
         assert(response.getStatusCode().is2xxSuccessful() == true);
         assert(response.getBody().toString().equals("3194"));
+    }
+
+    @Test
+    public void testLargeFile() throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body
+                = new LinkedMultiValueMap<>();
+        body.add("file", getFileFromResources("testfiles/large.txt"));
+        body.add("service", service);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity
+                = new HttpEntity<>(body, headers);
+        ResponseEntity response = restTemplate.
+                postForEntity(url(), requestEntity, String.class);
+        assert(response.getStatusCode().is2xxSuccessful() == true);
+        assert(response.getBody().toString().equals("871198282"));
     }
 
     private FileSystemResource getFileFromResources(String fileName) {
@@ -56,4 +73,7 @@ public class RankTests {
         }
     }
 
+    private String url() {
+        return "http://localhost:" + port + "/rank";
+    }
 }

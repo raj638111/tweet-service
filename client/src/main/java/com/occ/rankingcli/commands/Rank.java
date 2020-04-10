@@ -5,19 +5,23 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
-import picocli.CommandLine.Help.Ansi.Style;
-import picocli.CommandLine.Help.ColorScheme;
 import java.io.File;
 import java.util.concurrent.Callable;
+
+/*
+    This command provides rank for the given file
+    submitted by the user.
+ */
+
 
 @Slf4j
 @CommandLine.Command(name = "rank",
         description = "'rank' command computes rank for a given file")
 public class Rank implements Callable {
 
-
     @CommandLine.Option(names = "--host", required = true,
-        description = "Rest service location 'hostname:port'")
+        description = "Reset service host name & port" +
+                "\nExample: http://localhost:8080")
     String host;
 
     @CommandLine.Option(names = "--file", required = true,
@@ -30,10 +34,11 @@ public class Rank implements Callable {
             " Run 'ls' command to get the list of Ranking Service available")
     String service;
 
-    @CommandLine.Option(names = "--consider", required = false,
-        defaultValue = "firstname",
-        description = "Should we sort only the first name, last name or both")
-    String consider;
+    @CommandLine.Option(names = "--nameselect", required = false,
+        defaultValue = "FIRST_NAME",
+        description = "Should we sort only the first name, last name or both." +
+            " Available values are FIRST_NAME, LAST_NAME, BOTH")
+    String nameselect;
 
     @CommandLine.Option(names = "--descending", required = false,
         defaultValue = "false",
@@ -45,12 +50,13 @@ public class Rank implements Callable {
         String url = host + "/rank";
         log.info("\nGetting rank for file " + file + " from " + url + "...");
         HttpResponse<String> response = Unirest.post(url)
-                .field("file", new File(this.file))
-                .field("service", this.service)
-                .field("consider", this.consider)
-                .field("descending", this.descending)
-                .asString();
+            .field("file", new File(this.file))
+            .field("service", this.service)
+            .field("nameselect", this.nameselect)
+            .field("descending", this.descending)
+            .asString();
         log.info("\nRank for file is " + response.getBody() + "\n");
-        return 23;
+        return response.getStatus();
     }
+
 }

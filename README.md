@@ -2,6 +2,10 @@
 
 Considering the user should be able to get a score from both the **Command Line** and from a **Web App** I have decided to create this utility based on a **client** / **server** (Web Service) architecture
 
+# Assumptions
+
+1. Names will not contain any other character other than `[a-zA-Z]`. Any other characters gets a value of 0
+
 # Project Structure
 
 This project is divided into 2 Modules

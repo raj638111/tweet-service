@@ -41,8 +41,8 @@ public class Ranking {
     }
 
     public List<NameInfo> parseAndSortNames(String str, String consider,
-        Boolean naturalSort){
-        Comparator<String> comparator = naturalSort == true ? Comparator.naturalOrder() :
+        Boolean descending){
+        Comparator<String> comparator = descending == false ? Comparator.naturalOrder() :
             Comparator.reverseOrder();
         String[] names = str.split(",");
         Stream<String> stream = Arrays.stream(names);

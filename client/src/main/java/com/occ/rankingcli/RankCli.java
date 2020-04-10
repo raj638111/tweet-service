@@ -5,14 +5,21 @@ import com.occ.rankingcli.commands.Rank;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
+
 @Slf4j
 @CommandLine.Command(subcommands = {LS.class, Rank.class})
-class RankCli{
+public class RankCli implements Runnable{
 
     public static void main(String[] args) {
-        log.info("Inside main");
         RankCli app = new RankCli();
-        new CommandLine(app).execute(args);
+        CommandLine cmd = new CommandLine(app);
+        cmd.execute(args);
+        if(args.length == 0){
+            cmd.usage(System.out);
+        }
+    }
+
+    public void run() {
     }
 
 }

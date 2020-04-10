@@ -28,27 +28,27 @@ public class RankingController {
         log.info("No of Ranking Service / Algorithm available -> " + services.size());
     }
 
-    @GetMapping("/services")
+    @GetMapping("/ls")
     public List<String> getServices() {
         List<String> services = new LinkedList<String>();
         serviceMap.forEach((key, value) -> services.add(key));
         return services;
     }
 
-    @PostMapping("/ranking")
+    @PostMapping("/rank")
     public BigInteger gpost(@RequestParam("file") MultipartFile file,
         @RequestParam(value = "service", defaultValue = "com.occ.rankingservice.impl.Ranking") String service,
         @RequestParam(value = "consider", defaultValue = "firstname") String consider,
-        @RequestParam(value = "naturalsort", defaultValue = "true") Boolean naturalsort)
+        @RequestParam(value = "descending", defaultValue = "false") Boolean descending)
         throws IOException {
         String fName = file.getOriginalFilename();
         log.info("fName -> " + fName);
         log.info("service -> " + service);
         log.info("consider -> " + consider);
-        log.info("naturalsort -> " + naturalsort);
+        log.info("descending -> " + descending);
         String str = new String(file.getBytes());
         Ranking serviceImpl = serviceMap.get(service);
-        List<NameInfo> names = serviceImpl.parseAndSortNames(str, consider, naturalsort);
+        List<NameInfo> names = serviceImpl.parseAndSortNames(str, consider, descending);
         BigInteger sum = serviceImpl.calculateSum(names);
         return sum;
     }

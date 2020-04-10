@@ -11,7 +11,8 @@ Considering the user should be able to get a score from both the **Command Line*
 This project is divided into 2 Modules
 
 1. `$HOME/client`
-    - **command line utility (CLI)** that will speak to the web service to get the answer         
+    - **command line utility (CLI)** that will speak to the web service to get the answer
+    - **CLI** is developed using [picocli](https://picocli.info/)         
 2. `$HOME/service` 
     - **Web Service** that provides the ranking service. Web service is developed using `Spring Boot`
     

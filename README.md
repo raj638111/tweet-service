@@ -26,6 +26,8 @@ This project is divided into 2 Modules
 
 From `$HOME/service` run,
 
+(Note: Use `--port <port no>` if you want to run the server on different port)
+
 ```
 java -jar target/service-0.0.1-SNAPSHOT.jar
 ```

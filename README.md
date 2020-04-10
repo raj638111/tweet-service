@@ -146,7 +146,7 @@ Usage: <main class> rank [--descending] --file=<file> --host=<host>
                               available
 ```
 
-# Project Structure in Detail
+# Project Structure (src & test)
 
 ```
 |-- $HOME

@@ -8,7 +8,7 @@
     <artifactId>tweet-service</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>tweetnrank-rest</name>
+    <name>tweet-service</name>
 
     <modules>
         <module>service</module>

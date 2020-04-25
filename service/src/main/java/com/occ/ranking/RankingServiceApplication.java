@@ -23,7 +23,6 @@ public class RankingServiceApplication {
 		app.setDefaultProperties(Collections
 				.singletonMap("server.port", param.port));
 		app.run(args);
-		//SpringApplication.run(RankingServiceApplication.class, args);
 	}
 
 }

@@ -30,8 +30,16 @@ kafka-topics.sh --zookeeper 127.0.0.1:2181 --list
 
 -- Delete & Create
 
-kafka-topics.sh --zookeeper 127.0.0.1:2181  --delete --topic
-kafka-topics.sh --zookeeper 127.0.0.1:2181 --create --partitions 1 --replication-factor 1 --topic
+kafka-topics.sh --zookeeper 127.0.0.1:2181  --delete --topic i1
+kafka-topics.sh --zookeeper 127.0.0.1:2181  --delete --topic o1
+
+kafka-topics.sh --zookeeper 127.0.0.1:2181  --delete --topic tweets
+kafka-topics.sh --zookeeper 127.0.0.1:2181 --create --partitions 1 \
+--replication-factor 1 --topic tweets
+
+kafka-topics.sh --zookeeper 127.0.0.1:2181  --delete --topic trends
+kafka-topics.sh --zookeeper 127.0.0.1:2181 --create --partitions 1 \
+--replication-factor 1 --topic trends
 
 
 -- Read from topic

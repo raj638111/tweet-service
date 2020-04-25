@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.internal.core.type.codec.BigIntCodec;
 import com.occ.ranking.model.TagNCount;
 import com.occ.ranking.model.TrendInfo;
 import com.occ.ranking.model.TweetInfo;
@@ -20,23 +21,33 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
+import picocli.CommandLine;
 
 @Slf4j
 @RestController
 public class RankingController {
 
     CqlSession session;
+    KafkaProducer<String, String> producer;
+    final String TOPIC_TWEETS = "tweets";
+    final String TABLE_TSTAMP = "charter.trends_tstamp";
+    final String TABLE_TRENDS_BY_COUNT = "charter.trends_bycount";
 
     @Autowired // Inject all 'Ranking' implementations
     RankingController() {
         log.info("Creating cassandra session");
         session = CqlSession.builder().build();
         log.info("Session created");
+        log.info("Creating Kafka producer");
+        Properties properties = getPropery();
+        producer = new KafkaProducer<String, String>(properties);
+        log.info("Kafka producer created");
         Thread cleanup = new Thread(() -> {
-                log.info("Closing cassandra session");
-                session.close();
-            }
-        );
+            log.info("Closing cassandra session");
+            session.close();
+            log.info("Closing kafka producer");
+            producer.close();
+        });
         Runtime.getRuntime().addShutdownHook(cleanup);
     }
 
@@ -44,17 +55,13 @@ public class RankingController {
     @PostMapping("/tweet")
     public Boolean gpost(@RequestParam(value = "tweet") String tweet) {
         List<TweetInfo> dataList = parseTweet(tweet);
-        Properties properties = getPropery();
-        KafkaProducer<String, String> producer =
-                new KafkaProducer<String, String>(properties);
         for(TweetInfo data : dataList) {
             String concat = data.tweet + " |!| " + data.time;
             ProducerRecord<String, String> record =
-                new ProducerRecord<String, String>("i1", data.hashtag, concat);
+                new ProducerRecord<String, String>(TOPIC_TWEETS, data.hashtag, concat);
             producer.send(record);
         }
         producer.flush();
-        producer.close();
         return false;
     }
 
@@ -73,13 +80,13 @@ public class RankingController {
 
     public TrendInfo retieveCountFromDB(String tstamp){
         ArrayList<TagNCount> lst = new ArrayList<TagNCount>();
-        String query = "select hashtag, count from charter.trends_bycount where tstamp = " +
-            String.format("'%s' limit 25", tstamp);
+        String query = "select hashtag, count from " + TABLE_TRENDS_BY_COUNT +
+            " where tstamp = " + String.format("'%s' limit 25", tstamp);
         log.info("Query = " + query);
         ResultSet result = session.execute(query);
         for(Row row: result){
             String hashtag = row.getString("hashtag");
-            String count = row.getString("count");
+            String count = Long.toString(row.getLong("count"));
             TagNCount info = new TagNCount();
             info.setTag(hashtag);
             info.setCount(count);
@@ -92,7 +99,7 @@ public class RankingController {
     }
 
     public String getLatestTime() throws Exception {
-        String query = "select tstamp from charter.trends_tstamp where dummy = '-' limit 1";
+        String query = "select tstamp from " + TABLE_TSTAMP + " where dummy = '-' limit 1";
         log.info("query -> " + query);
         ResultSet result = session.execute(query);
         Iterator<Row> iterator = result.iterator();
@@ -101,7 +108,7 @@ public class RankingController {
             log.info("tstamp -> " + tstamp);
             return tstamp;
         }else {
-            throw new Exception("No results available");
+            throw new Exception("No results available in table -> " + TABLE_TSTAMP);
         }
     }
 

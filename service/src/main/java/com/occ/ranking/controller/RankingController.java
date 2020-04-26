@@ -10,10 +10,7 @@ import java.util.regex.Pattern;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
-import com.datastax.oss.driver.internal.core.type.codec.BigIntCodec;
-import com.occ.ranking.model.TagNCount;
-import com.occ.ranking.model.TrendInfo;
-import com.occ.ranking.model.TweetInfo;
+import com.occ.ranking.model.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -21,7 +18,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
-import picocli.CommandLine;
 
 @Slf4j
 @RestController
@@ -32,6 +28,7 @@ public class RankingController {
     final String TOPIC_TWEETS = "tweets";
     final String TABLE_TSTAMP = "charter.trends_tstamp";
     final String TABLE_TRENDS_BY_COUNT = "charter.trends_bycount";
+    final String TABLE_TRENDS_BY_TAG = "charter.trends_bytag";
 
     @Autowired // Inject all 'Ranking' implementations
     RankingController() {
@@ -53,12 +50,12 @@ public class RankingController {
 
 
     @PostMapping("/tweet")
-    public Boolean gpost(@RequestParam(value = "tweet") String tweet) {
-        List<TweetInfo> dataList = parseTweet(tweet);
+    public Boolean gpost(@RequestBody TweetRequest req) {
+        List<TweetInfo> dataList = parseTweet(req.getTweet());
         for(TweetInfo data : dataList) {
             String concat = data.tweet + " |!| " + data.time;
             ProducerRecord<String, String> record =
-                new ProducerRecord<String, String>(TOPIC_TWEETS, data.hashtag, concat);
+                    new ProducerRecord<String, String>(TOPIC_TWEETS, data.hashtag, concat);
             producer.send(record);
         }
         producer.flush();
@@ -76,6 +73,38 @@ public class RankingController {
         }else {
             return retieveCountFromDB(tstamp);
         }
+    }
+
+    @GetMapping("/gettag")
+    public TagInfo getTag(
+            @RequestParam(value = "tag", defaultValue = "") String tag
+    ) throws Exception {
+        log.info("tag -> " + tag);
+        if(tag.equals("")) {
+            throw new Exception("tag parameter needed. Pls specify");
+        }else {
+            return retrieveDatesForAtag(tag);
+        }
+    }
+
+    public TagInfo retrieveDatesForAtag(String tag) {
+        ArrayList<TimeNCount> lst = new ArrayList<TimeNCount>();
+        String query = "select tstamp, count from " + TABLE_TRENDS_BY_TAG +
+                " where hashtag = " + String.format("'%s' limit 25", tag);
+        log.info("Query = " + query);
+        ResultSet result = session.execute(query);
+        for(Row row: result){
+            String tstamp = row.getInstant("tstamp").toString();
+            String count = Long.toString(row.getLong("count"));
+            TimeNCount info = new TimeNCount();
+            info.setTime(tstamp);
+            info.setCount(count);
+            lst.add(info);
+        }
+        TagInfo info = new TagInfo();
+        info.setTag(tag);
+        info.setCountList(lst);
+        return info;
     }
 
     public TrendInfo retieveCountFromDB(String tstamp){

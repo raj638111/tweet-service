@@ -57,7 +57,7 @@ public class TweetController {
             producer.send(record);
         }
         producer.flush();
-        return false;
+        return true;
     }
 
     @GetMapping("/trending-hashtags")

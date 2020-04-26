@@ -13,7 +13,6 @@ This web service provides two end points
 `mvn clean package` from `$PROJECT_HOME` produces,
 
 ```
-...
 $PROJECT_HOME/service/target/service-0.0.1-SNAPSHOT.jar
 ```
 

@@ -85,6 +85,11 @@ public class TweetController {
         }
     }
 
+    /**
+     * Retrieve all the Dates for a given HashTag
+     * @param tag HashTag
+     * @return
+     */
     public TagInfo retrieveDatesForAtag(String tag) {
         ArrayList<TimeNCount> lst = new ArrayList<TimeNCount>();
         String query = "select tstamp, count from " + TABLE_TRENDS_BY_TAG +
@@ -105,6 +110,12 @@ public class TweetController {
         return info;
     }
 
+    /**
+     * Retrieve the top 25 hash tags and its associated count
+     * for a given tstamp
+     * @param tstamp
+     * @return
+     */
     public TrendInfo retieveCountFromDB(String tstamp){
         ArrayList<TagNCount> lst = new ArrayList<TagNCount>();
         String query = "select hashtag, count from " + TABLE_TRENDS_BY_COUNT +
@@ -125,6 +136,12 @@ public class TweetController {
         return trendInfo;
     }
 
+    /**
+     * Find the latest time window for which data exist in
+     * the Cassandra table
+     * @return Latest time window
+     * @throws Exception
+     */
     public String getLatestTime() throws Exception {
         String query = "select tstamp from " + TABLE_TSTAMP + " where dummy = '-' limit 1";
         log.info("query -> " + query);
@@ -139,6 +156,13 @@ public class TweetController {
         }
     }
 
+    /**
+     * Parse a tweet into Tweet & HashTag
+     * In case of multiple HashTags for a tweet, list of
+     * Tweet, HashTag is returned
+     * @param tweetWithHashTag List of all HashTags + Tweet
+     * @return
+     */
     public List<TweetInfo> parseTweet(String tweetWithHashTag) {
         String dtime = nearest5minutes(new Timestamp(System.currentTimeMillis()));
         List<TweetInfo> result = new ArrayList<TweetInfo>();
@@ -158,6 +182,17 @@ public class TweetController {
         return result;
     }
 
+    /**
+     * Roundoff the given timestamp to the nearest 5th minute. Example:
+     *  2019-10-11 10:32 => 2019-10-11 10:30
+     *  ...
+     *  2019-10-11 10:34 => 2019-10-11 10:30
+     *  2019-10-11 10:35 => 2019-10-11 10:35
+     *  ...
+     *  2019-10-11 10:39 => 2019-10-11 10:35
+     * @param timestamp
+     * @return
+     */
     public String nearest5minutes(Timestamp timestamp) {
         SimpleDateFormat hourFormat = new SimpleDateFormat("yyyy-MM-dd HH");
         SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
@@ -167,6 +202,10 @@ public class TweetController {
         return result;
     }
 
+    /**
+     * Properties to connect to Kafka
+     * @return Kafka properties
+     */
     public Properties getPropery() {
         String bootstrapServers = "127.0.0.1:9092";
         Properties properties = new Properties();

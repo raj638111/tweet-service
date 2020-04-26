@@ -12,7 +12,6 @@
 
     <modules>
         <module>service</module>
-        <module>client</module>
     </modules>
 
 </project>

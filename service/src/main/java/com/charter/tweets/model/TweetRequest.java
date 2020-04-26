@@ -1,4 +1,4 @@
-package com.occ.ranking.model;
+package com.charter.tweets.model;
 
 public class TweetRequest {
 

@@ -1,16 +1,14 @@
-package com.occ.ranking.controller;
+package com.charter.tweets.controller;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.charter.tweets.model.*;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
-import com.occ.ranking.model.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -21,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-public class RankingController {
+public class TweetController {
 
     CqlSession session;
     KafkaProducer<String, String> producer;
@@ -30,8 +28,8 @@ public class RankingController {
     final String TABLE_TRENDS_BY_COUNT = "charter.trends_bycount";
     final String TABLE_TRENDS_BY_TAG = "charter.trends_bytag";
 
-    @Autowired // Inject all 'Ranking' implementations
-    RankingController() {
+    @Autowired
+    TweetController() {
         log.info("Creating cassandra session");
         session = CqlSession.builder().build();
         log.info("Session created");
@@ -158,13 +156,6 @@ public class RankingController {
             result.add(data);
         }
         return result;
-    }
-
-    public String nearest5minutes(String str) throws ParseException {
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = formatter.parse(str);
-        Timestamp tstamp = new Timestamp(date.getTime());
-        return nearest5minutes(tstamp);
     }
 
     public String nearest5minutes(Timestamp timestamp) {

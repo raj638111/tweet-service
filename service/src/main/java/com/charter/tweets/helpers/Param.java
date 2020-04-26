@@ -1,4 +1,4 @@
-package com.occ.ranking.helpers;
+package com.charter.tweets.helpers;
 
 import picocli.CommandLine;
 

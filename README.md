@@ -37,3 +37,32 @@ This should start the web service on `localhost:8080`
  :: Spring Boot ::        (v2.2.6.RELEASE)
 ...
 ```
+
+# Project Structure
+
+```
+service
+.
+├── pom.xml
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── charter
+    │   │           └── tweets
+    │   │               ├── TweetServiceApplication.java
+    │   │               ├── controller
+    │   │               │   └── TweetController.java
+    │   │               ├── helpers
+    │   │               │   └── Param.java
+    │   │               └── model
+    │   │                   ├── TagInfo.java
+    │   │                   ├── TagNCount.java
+    │   │                   ├── TimeNCount.java
+    │   │                   ├── TrendInfo.java
+    │   │                   ├── TweetInfo.java
+    │   │                   └── TweetRequest.java
+    │   └── resources
+    │       ├── application.conf
+    │       ├── logback.xml
+```
